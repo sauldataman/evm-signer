@@ -1,9 +1,9 @@
 package hsm
 
 import (
-	"cs-evm-signer/pkg/hsm/aws"
-	"cs-evm-signer/pkg/hsm/iface"
-	"cs-evm-signer/pkg/hsm/yubikey"
+	"evm-signer/pkg/hsm/aws"
+	"evm-signer/pkg/hsm/iface"
+	"evm-signer/pkg/hsm/yubikey"
 	"fmt"
 	"strconv"
 	"strings"

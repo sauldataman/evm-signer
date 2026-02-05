@@ -1,12 +1,10 @@
-module cs-evm-signer
+module evm-signer
 
 go 1.19
 
 require (
-	github.com/CoinSummer/go-base v0.0.2
-	github.com/CoinSummer/go-ethutils v0.0.4 // direct
-	github.com/CoinSummer/go-utils v0.0.2 // direct
 	github.com/btcsuite/btcd v0.21.0-beta
+	github.com/btcsuite/btcutil v1.0.2
 	github.com/certusone/yubihsm-go v0.3.0
 	github.com/ethereum/go-ethereum v1.11.3
 	github.com/gin-gonic/gin v1.9.0
@@ -14,6 +12,7 @@ require (
 	github.com/shirou/gopsutil/v3 v3.22.9
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/viper v1.7.0
+	github.com/tyler-smith/go-bip39 v1.1.0
 )
 
 require (

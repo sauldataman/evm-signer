@@ -1,11 +1,11 @@
 package account
 
 import (
-	"cs-evm-signer/pkg/hsm"
-	"cs-evm-signer/pkg/hsm/iface"
-	"cs-evm-signer/types"
+	"evm-signer/pkg/hsm"
+	"evm-signer/pkg/hsm/iface"
+	"evm-signer/pkg/strutil"
+	"evm-signer/types"
 	"fmt"
-	dString "github.com/CoinSummer/go-utils/go/string"
 	"sort"
 	"strconv"
 )
@@ -46,7 +46,7 @@ func NewMultiYubiHsm(params *hsm.ParamsHsm, privateKeyIds string) (*multiHsmHand
 
 	// 解析 private_key_ids, - 表示连号，前闭后开区间；, 表示独立的 privateKeyId
 	indexMap := make(map[int64]struct{})
-	splitMap, err := dString.SplitNum(privateKeyIds)
+	splitMap, err := strutil.SplitNum(privateKeyIds)
 	if err != nil {
 		return nil, fmt.Errorf("index config error")
 	}

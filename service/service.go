@@ -1,11 +1,11 @@
 package service
 
 import (
-	"cs-evm-signer/service/account"
-	"cs-evm-signer/service/rules"
-	"cs-evm-signer/types"
+	"evm-signer/pkg/logging"
+	"evm-signer/service/account"
+	"evm-signer/service/rules"
+	"evm-signer/types"
 	"fmt"
-	"github.com/CoinSummer/go-base/logging"
 	"github.com/gin-gonic/gin"
 	"strings"
 	"sync"

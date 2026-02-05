@@ -1,9 +1,9 @@
 package account
 
 import (
-	"cs-evm-signer/pkg/hsm"
-	"cs-evm-signer/pkg/hsm/iface"
-	"cs-evm-signer/types"
+	"evm-signer/pkg/hsm"
+	"evm-signer/pkg/hsm/iface"
+	"evm-signer/types"
 	"fmt"
 )
 

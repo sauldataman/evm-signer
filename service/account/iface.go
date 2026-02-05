@@ -2,8 +2,8 @@ package account
 
 import (
 	"crypto/ecdsa"
-	"cs-evm-signer/pkg/hsm/iface"
-	"cs-evm-signer/types"
+	"evm-signer/pkg/hsm/iface"
+	"evm-signer/types"
 )
 
 type (

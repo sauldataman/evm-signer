@@ -2,10 +2,10 @@ package account
 
 import (
 	"crypto/ecdsa"
-	"cs-evm-signer/pkg/hsm"
-	"cs-evm-signer/types"
+	"evm-signer/pkg/ethutils"
+	"evm-signer/pkg/hsm"
+	"evm-signer/types"
 	"fmt"
-	ethutils "github.com/CoinSummer/go-ethutils"
 	_keystore "github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/cmd/utils"
 	"github.com/ethereum/go-ethereum/common"

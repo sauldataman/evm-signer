@@ -1,11 +1,11 @@
 package service
 
 import (
-	"cs-evm-signer/base"
-	"cs-evm-signer/service/account"
-	"cs-evm-signer/service/rules"
-	"cs-evm-signer/types"
 	"encoding/json"
+	"evm-signer/base"
+	"evm-signer/service/account"
+	"evm-signer/service/rules"
+	"evm-signer/types"
 	"strings"
 )
 

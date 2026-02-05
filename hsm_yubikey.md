@@ -45,11 +45,11 @@
 ### HSM 添加新的身份以及密钥
 1. 使用 put 命令添加新的身份
    ```shell
-   put authkey 0 2 test_hsm 1,2,3 generate-asymmetric-key,export-wrapped,get-pseudo-random,put-wrap-key,import-wrapped,delete-asymmetric-key,sign-ecdsa sign-ecdsa,exportable-under-wrap,export-wrapped,import-wrapped p5qV!7!P1wCP
+   put authkey 0 2 <your_label> 1,2,3 generate-asymmetric-key,export-wrapped,get-pseudo-random,put-wrap-key,import-wrapped,delete-asymmetric-key,sign-ecdsa sign-ecdsa,exportable-under-wrap,export-wrapped,import-wrapped <your_password>
    # 0: 当前 sessionId
    # 2: 要创建的 auth_key
-   # test_hsm: 当前 ID 的 label
-   # p5qV!7!P1wCP: 为设置的登陆密码
+   # <your_label>: 当前 ID 的 label
+   # <your_password>: 为设置的登陆密码
    ```
    - 如果当前 ID 已经存在，则会展示如下错误。
       
@@ -64,7 +64,7 @@
    ```
 3. 测试新的管理身份登入 yubikey
    ```shell
-   session open 2 p5qV!7!P1wCP
+   session open 2 <your_password>
    # 提示：Created session 1 则为成功
    ```
 

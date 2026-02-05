@@ -58,7 +58,7 @@ createUser CU user_name user_password # 创建 CU 账户管理公私钥对。
 ### HSM 中私钥生成步骤
 ```shell
 /opt/cloudhsm/bin/key_mgmt_util
-loginHSM -u CU -s hsm_user -hpswd <password> # 测试密码：9g*KJ09TxMcbq#ns
+loginHSM -u CU -s <your_username> -hpswd <password> # 测试密码：<your_password>
 
 genECCKeyPair -i 16 -l ether_test
 # 16 为 aws 的 secp256k1 曲线 id
@@ -80,10 +80,10 @@ account type: [HSM], index: [3], address: [0xf6994200339FB759de34dfC26052295Dfb9
    git clone https://github.com/ThreeAndTwo/aws-cloudhsm-pkcs11-examples.git
    cd aws-cloudhsm-pkcs11-examples/
    mkdir build && cd build
-   cmake .. -DHSM_USER=hsm_user -DHSM_PASSWORD=9g*KJ09TxMcbq#ns
+   cmake .. -DHSM_USER=<your_username> -DHSM_PASSWORD=<your_password>
    sudo make
    # #正常打印出 hash 证明整个环境已经准备就行
-   src/sign/sign --pin hsm_user:9g*KJ09TxMcbq#ns 
+   src/sign/sign --pin <your_username>:<your_password> 
    ```
 2. 使用签名机代码配置 aws 的 HSM 测试。
 

@@ -1,8 +1,8 @@
 package service
 
 import (
-	"cs-evm-signer/chains"
-	sTypes "cs-evm-signer/types"
+	"evm-signer/chains"
+	sTypes "evm-signer/types"
 	"encoding/json"
 	"fmt"
 	"github.com/ethereum/go-ethereum/common/hexutil"

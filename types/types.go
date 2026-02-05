@@ -2,7 +2,7 @@ package types
 
 import (
 	"crypto/ecdsa"
-	"cs-evm-signer/pkg/hsm/iface"
+	"evm-signer/pkg/hsm/iface"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"math/big"

@@ -20,7 +20,7 @@ $ mkdir .keystore
 
 ```markdown
 1. listen.port // 配置服务启动的端口号
-2. auth.ip // IP 白名单 127.0.0.1,16.163.90.199,2407:cdc0:b02d::1039,110.184.67.202
+2. auth.ip // IP 白名单，例如：127.0.0.1
 3. account
     * 签名机解析账户类型支持 6 种，分别为 Keystore, EvMnemonic,
       EncryptedMnemonic, PlainMnemonic, PlainPrivateKey, HSM
@@ -67,7 +67,7 @@ $ mkdir .keystore
    私钥加密后的json文件，请在key字段填写密钥文件路径
 4. EncryptedMnemonic
    使用keystore相同算法生成的的加密助记词json文件，请在key字段填写密钥文件路径
-   建议使用 CS Wallet 对助记词进行非对称加密
+   建议使用支持 keystore 加密的工具对助记词进行加密
 5. HSM
    yubikey/AWS CloudHSM 硬件，配置参考hsm_yubikey和hsm_aws文档
 6. EvMnemonic
@@ -112,9 +112,9 @@ pass: # 解密密码，选填项，如果不填则需要在程序启动时，在
 ```yaml
 type: HSM
 provider: aws
-pin: hsm_user:9g*KJ09TxMcbq#ns # 可测试使用的 pin code
-private_key_id: 262158 # 可测试使用的 id
-public_key_id: 262159 # 可测试使用的 id
+pin: <hsm_user>:<password> # HSM 用户名和密码
+private_key_id: <your_private_key_id>
+public_key_id: <your_public_key_id>
 ```
 
 ##### HSM
@@ -123,8 +123,8 @@ public_key_id: 262159 # 可测试使用的 id
 type: HSM # HSM
 connector_url: localhost:12345 # 新增字段，当 provider == yubihsm-connector, 如果不填，默认为：localhost:3456
 provider: "yubihsm-connector"
-pin: 2:password2 # 可测试使用的 pin code
-private_key_id: 1000 # 可测试使用的 id
+pin: <auth_key_id>:<password> # YubiHSM 认证密钥ID和密码
+private_key_id: <your_private_key_id>
 ```
 
 ##### MultiHSM
@@ -227,33 +227,32 @@ $ go build -o signer
 3. 修改本地签名机地址和子域名
    ```
    [common]
-    server_addr = frp.csiodev.com
+    server_addr = <your_frp_server>
     server_port = 7000
     log_file = ./frpc.log
     log_level = info
     log_max_days = 3
-    token = 6g9MbClGFQfK0T34VH1k
+    token = <your_token>
     protocol = tcp
-    
-    
-    [signer-noven]
+
+
+    [signer]
     type = http
-    
+
     #你自己签名机的ip
     local_ip = 127.0.0.1
-    
+
     #你自己签名机的端口号
     local_port = 8080
-    
+
     use_encryption = true
     use_compression = true
-    
+
     #改成你自己的子域名
-    #公网访问路径 http://[subdomain].frp.csiodev.com 即 http://noven.frp.csiodev.com
-    subdomain = noven
+    subdomain = <your_subdomain>
    ```
 4. 启动代理 ./frpc -c ./frpc.ini 即可
-5. 最后, 将http://noven.frp.csiodev.com填入到Composor-Account即可
+5. 配置完成后，可通过公网域名访问签名机服务
 
 ## FAQ
 
@@ -272,7 +271,7 @@ $ go build -o signer
 
 ```text
 $ CGO_ENABLED=1 go build -o signer_test
-# cs-evm-signer/pkg/hsm/aws
+# evm-signer/pkg/hsm/aws
 pkg/hsm/aws/cloudhsm.go:28:27: undefined: pkcs11.Ctx
 pkg/hsm/aws/cloudhsm.go:29:27: undefined: pkcs11.SessionHandle
 pkg/hsm/aws/cloudhsm.go:76:10: undefined: pkcs11.ObjectHandle
@@ -290,11 +289,11 @@ go env
 
 ### 应该借助什么生成加密私钥的keystore 文件？
 
-    请使用 CS-Wallet 
+    请使用 支持 keystore 加密的工具 
 
 ### 应该借助什么工具生成加密助记词文件？
 
-    请使用 CS-Wallet
+    请使用 支持 keystore 加密的工具
 
 ### 如何确认账户是否加载成功？
 

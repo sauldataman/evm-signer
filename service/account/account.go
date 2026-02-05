@@ -2,12 +2,12 @@ package account
 
 import (
 	"crypto/ecdsa"
-	"cs-evm-signer/pkg/hsm"
-	"cs-evm-signer/pkg/hsm/iface"
-	"cs-evm-signer/types"
+	"evm-signer/pkg/ethutils"
+	"evm-signer/pkg/hsm"
+	"evm-signer/pkg/hsm/iface"
+	"evm-signer/pkg/logging"
+	"evm-signer/types"
 	"fmt"
-	"github.com/CoinSummer/go-base/logging"
-	ethutils "github.com/CoinSummer/go-ethutils"
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/console/prompt"
 	"github.com/ethereum/go-ethereum/crypto"
