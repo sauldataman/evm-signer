@@ -45,7 +45,7 @@ func (s *Service) GetAccount(accountAddr string) (account *types.Account, ok boo
 	if !ok {
 		return nil, ok
 	}
-	if account.PriKey == nil && account.HsmClient == nil {
+	if account.PriKey == nil {
 		return nil, false
 	}
 	return

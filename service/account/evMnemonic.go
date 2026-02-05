@@ -3,7 +3,6 @@ package account
 import (
 	"crypto/ecdsa"
 	"evm-signer/pkg/ethutils"
-	"evm-signer/pkg/hsm"
 	"evm-signer/types"
 	"fmt"
 	_keystore "github.com/ethereum/go-ethereum/accounts/keystore"
@@ -92,35 +91,6 @@ func (em *evMnemonic) Decrypt() []*types.Account {
 			// Use the first account from the mnemonic
 			_address = pmAccounts[0].Address
 			_priKey = pmAccounts[0].PriKey
-		case HSMTy:
-			err := checkHsmParams(subKeyMap)
-			if err != nil {
-				logger.Fatalf("subKey config for account index %d error: %s", k, err)
-			}
-			_hsmParams := unWrapHsmData(subKeyMap)
-			lastPass, _hsmParams.pin = resetPass(lastPass, _hsmParams.pin, index, subKeyMap)
-
-			hsmParam := &hsm.ParamsHsm{
-				Url:          _hsmParams.url,
-				Provider:     hsm.ProviderHsm(_hsmParams.provider),
-				LibPath:      "",
-				Pin:          _hsmParams.pin,
-				PublicKeyId:  _hsmParams.publicKeyId,
-				PrivateKeyId: _hsmParams.privateKeyId,
-			}
-
-			fmt.Printf("_hsmParams.url: %s \n", _hsmParams.url)
-			hc, err := NewHsm(hsmParam)
-			if err != nil {
-				logger.Fatalf("create hsm client error: %s", err)
-			}
-			_, address, err := hc.client.GetPublicKey()
-			if err != nil {
-				logger.Fatalf("get address via HSM error: %s", err)
-			}
-			_address = address
-			account.HsmObjId = int64(_hsmParams.privateKeyId)
-			account.HsmClient = hc.client
 		default:
 			logger.Fatalf("%s type unsupported", subKeyType)
 		}

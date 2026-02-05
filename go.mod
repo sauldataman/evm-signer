@@ -5,7 +5,6 @@ go 1.19
 require (
 	github.com/btcsuite/btcd v0.21.0-beta
 	github.com/btcsuite/btcutil v1.0.2
-	github.com/certusone/yubihsm-go v0.3.0
 	github.com/ethereum/go-ethereum v1.11.3
 	github.com/gin-gonic/gin v1.9.0
 	github.com/google/uuid v1.3.0
@@ -17,7 +16,6 @@ require (
 
 require (
 	github.com/go-errors/errors v1.4.2
-	github.com/miekg/pkcs11 v1.1.1
 	github.com/shopspring/decimal v1.2.0
 )
 
