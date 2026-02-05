@@ -1,0 +1,21 @@
+variables:
+  DOCKER_DRIVER: overlay2
+
+before_script:
+  - export GOOS=linux
+  - export GOARCH=amd64
+  - export CGO_ENABLED=0
+
+stages:
+  - Build
+
+build:
+  stage: Build
+  image: golang:1.15-alpine
+  only:
+    - tags
+    - dev
+  artifacts:
+    untracked: true
+  script:
+    - go build -o service

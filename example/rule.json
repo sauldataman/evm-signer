@@ -1,0 +1,25 @@
+[
+  {
+    "name": "eth_transfer_to_target",
+    "chain_id": 1,
+    "conditions": [
+      {"field": "to", "symbol": "==", "value": "0xbD5F7a826Fd30396115a9119Abebc958E4923064"},
+      {"field": "value", "symbol": "<=", "value": "999999999999999999"}
+    ]
+  },
+  {
+    "name": "usdt_transfer_limit",
+    "chain_id": 1,
+    "conditions": [
+      {"field": "to", "symbol": "==", "value": "0xdAC17F958D2ee523a2206206994597C13D831ec7"},
+      {"field": "data_selector", "symbol": "==", "value": "0xa9059cbb"},
+      {
+        "field": "data_param",
+        "symbol": "<=",
+        "value": "9999999",
+        "abi": "{\"name\":\"transfer\",\"type\":\"function\",\"inputs\":[{\"name\":\"to\",\"type\":\"address\"},{\"name\":\"value\",\"type\":\"uint256\"}]}",
+        "param": "value"
+      }
+    ]
+  }
+]
