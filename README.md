@@ -1,12 +1,12 @@
 # EVM Signer
 
-> 提供安全的 EVM 交易签名服务
+> A secure transaction signing service for EVM-compatible blockchains
 >
-> 依赖环境：Go >= 1.19
+> Requirements: Go >= 1.19
 
-## 配置流程
+## Getting Started
 
-### 创建配置文件
+### Create Configuration Files
 
 ```shell
 $ cp conf/config.yaml.example conf/config.yaml
@@ -14,30 +14,30 @@ $ cp conf/rule.json.example conf/rule.json
 $ mkdir .keystore
 ```
 
-### 配置 config.yaml 文件
+### Configure config.yaml
 
-#### 必填项
+#### Required Fields
 
 ```markdown
-1. listen.port // 配置服务启动的端口号
-2. auth.ip // IP 白名单，例如：127.0.0.1
+1. listen.port - The port number for the signing service
+2. auth.ip - IP whitelist (e.g., 127.0.0.1)
 3. account
-    * 签名机解析账户类型支持 5 种，分别为 Keystore, EvMnemonic,
-      EncryptedMnemonic, PlainMnemonic, PlainPrivateKey
-    * 其中建议 PlainMnemonic, PlainPrivateKey 仅供测试使用
-    * Keystore 为单个私钥加密出的 keystore 文件
-    * EvMnemonic 虚拟助记词，为一组私钥加密出的 keystore 文件
-    * EncryptedMnemonic 为加密后的助记词
-    * account 中的 type 为常量且区分大小写。填写时请务必注意！
+    * Supported account types: Keystore, EvMnemonic, EncryptedMnemonic,
+      PlainMnemonic, PlainPrivateKey
+    * PlainMnemonic and PlainPrivateKey are recommended for testing only
+    * Keystore: An encrypted JSON file containing a single private key
+    * EvMnemonic: A virtual mnemonic combining multiple account types
+    * EncryptedMnemonic: An encrypted mnemonic phrase file
+    * Note: The "type" field is case-sensitive
 ```
 
-### rule 的匹配文件
+### Rule Configuration
 
-使用 JSON 格式的规则文件进行交易验证，参照 `conf/rule.json.example` 配置。
+Use a JSON-formatted rule file for transaction validation. See `conf/rule.json.example` for reference.
 
-#### json 规则验证
+#### JSON Rule Validation
 
-主要填写 conditions 的内容，conditions 是个数组，数组间是 and 关系，即：必须同时满足才会判定规则匹配。
+The `conditions` array defines matching criteria. All conditions must be satisfied (AND logic) for a rule to match.
 
 ```json
 [
@@ -55,67 +55,73 @@ $ mkdir .keystore
 ]
 ```
 
-### Account 类型
+### Account Types
 
 ```markdown
 1. PlainMnemonic
-   明文助记词，支持 12|15|18|21|24 个单词长度的助记词
+   A plaintext mnemonic phrase (supports 12, 15, 18, 21, or 24 words)
+
 2. PlainPrivateKey
-   明文私钥，带0x前缀共66个字符
+   A plaintext private key (66 characters with 0x prefix)
+
 3. Keystore
-   私钥加密后的json文件，请在key字段填写密钥文件路径
+   An encrypted JSON keystore file. Specify the file path in the "key" field.
+
 4. EncryptedMnemonic
-   使用keystore相同算法生成的的加密助记词json文件，请在key字段填写密钥文件路径
-   建议使用支持 keystore 加密的工具对助记词进行加密
+   An encrypted mnemonic file using the keystore algorithm.
+   Specify the file path in the "key" field.
+
 5. EvMnemonic
-   虚拟助记词，由以上4种账户类型组合而成，可将多个不同格式的账户对外暴露为一个助记词账户
+   A virtual mnemonic that combines multiple account types,
+   exposing them as a single mnemonic-style account.
 ```
 
-#### Account 配置示例以及解释
+#### Account Configuration Examples
 
 ##### PlainMnemonic
 
 ```yaml
 type: PlainMnemonic
-key: <your_mnemonic>  # 明文助记词
-index: "0"  # 使用的账户下标
+key: <your_mnemonic>  # The mnemonic phrase
+index: "0"            # Account index to use
 ```
 
 ##### PlainPrivateKey
 
 ```yaml
 type: PlainPrivateKey
-key: <your_private_key> # 明文私钥
+key: <your_private_key>  # The private key
 ```
 
 ##### EncryptedMnemonic
 
 ```yaml
 type: EncryptedMnemonic
-key: # 加密后的助记词存放路径
-pass: # 解密密码，选填项，如果不填则需要在程序启动时，在命令行输入密码
-index: 0-10,11,20 # 使用助记词的指定下标，其中 - 表示连续的区间。, 分割的为单个 index
+key: <path_to_encrypted_file>  # Path to the encrypted mnemonic file
+pass: <password>               # Decryption password (optional; will prompt if omitted)
+index: 0-10,11,20              # Account indices: ranges (0-10) or individual (11,20)
 ```
 
 ##### Keystore
 
 ```yaml
 type: Keystore
-key: # keystore 存放路径
-pass: # 解密密码，选填项，如果不填则需要在程序启动时，在命令行输入密码
+key: <path_to_keystore>  # Path to the keystore file
+pass: <password>         # Decryption password (optional; will prompt if omitted)
 ```
 
 ##### EvMnemonic
 
-key的数量可以任意多个，支持 `use_last_pass`，在该场景下 keys 解析是有顺序的，即始终按照 key 由小到大进行解析。
-当不设置 `use_last_pass` 时默认为 true。当 `pass` 不为空 且 `use_last_pass` 为 true 时，优先使用 `pass` 的内容。
+You can define multiple keys of different types. The `use_last_pass` option allows password reuse across sequential keys (parsed in ascending order by key number).
+
+When `use_last_pass` is not set, it defaults to `false`. If `pass` is provided and `use_last_pass` is `true`, the explicit `pass` value takes priority.
 
 ```yaml
 type: EvMnemonic
 keys:
   1:
     type: Keystore
-    key: ./0xaaaa.json
+    key: ./account1.json
     pass: "******"
     use_last_pass: true
   2:
@@ -127,18 +133,21 @@ keys:
     index: "0"
 ```
 
-### 配置 rule.json 文件
+### Configure rule.json
 
-根据交易的基本信息，配置允许签名的规则。
-可配置的字段验证如下：
+Define signing rules based on transaction properties. Available fields for validation:
 
 ```markdown
 1. to
-   除转账外就是要调用的合约地址，即对应transactions里面的 to 字段；
+   The destination address (contract address for contract calls)
+
 2. data_selector
-   调用的目标合约的方法，对应transactions里面的data字段的前4个字节，例如 `0x12345678`
-3. eip712.domain.name/eip712.domain.version/eip712.domain.chainId/eip712.domain.verifyingContract
-   请查询eip712协议
+   The function selector (first 4 bytes of the data field), e.g., "0x12345678"
+
+3. EIP-712 fields
+   eip712.domain.name / eip712.domain.version / eip712.domain.chainId /
+   eip712.domain.verifyingContract
+   (See the EIP-712 specification for details)
 ```
 
 ## Build
@@ -147,54 +156,56 @@ keys:
 $ go build -o signer
 ```
 
-## 启动服务
+## Running the Service
 
 ```shell
-# 规则文件从 conf 目录加载（与 config.yaml 相同的搜索路径）
-# 默认加载 conf/rule.json
+# Load rules from conf directory (same search path as config.yaml)
+# Default: conf/rule.json
 
 ./signer start --port 8080
 
-# 指定不同的规则文件名（仍从 conf 目录加载）
+# Specify a different rule file
 ./signer start --port 8080 --rule rule-prod.json
 ```
 
-## 签名机暴露公网的方法
+## Exposing the Signer to the Internet
 
-### ngrok
+### Using ngrok
 
-1. 登录ngrok 官网  https://ngrok.com/
-2. 在dashboard找到 ngrok客户端, 下载
-3. 找到Key, Getting Started - Your Authtoken
-4. 按照文档步骤, 配置本机的ngrok
-5. 最后启动ngrok, ./ngrok http 8080 , 8080是你签名机端口号
+1. Sign up at https://ngrok.com/
+2. Download the ngrok client from the dashboard
+3. Get your authtoken from "Getting Started" > "Your Authtoken"
+4. Configure ngrok following the official documentation
+5. Start ngrok: `./ngrok http 8080` (replace 8080 with your signer port)
 
 ## FAQ
 
-### 如何生成公私钥对？
+### How do I generate a new key pair?
 
-使用子命令 `key generate`
+Use the `key generate` subcommand:
 
 ```shell
 ./signer key generate
 ```
 
-### 应该借助什么生成加密私钥的keystore 文件？
+### What tool should I use to create an encrypted keystore file?
 
-请使用支持 keystore 加密的工具
+Use any tool that supports Ethereum keystore encryption (e.g., geth, ethers.js, web3.js).
 
-### 应该借助什么工具生成加密助记词文件？
+### What tool should I use to create an encrypted mnemonic file?
 
-请使用支持 keystore 加密的工具
+Use any tool that supports keystore-style encryption for mnemonic phrases.
 
-### 如何确认账户是否加载成功？
+### How do I verify that an account loaded successfully?
 
-不同类型的账户下，都会打印出 account 下的第一个地址，因此如果有address信息展示即为加载成功。
+On startup, the signer prints the first address for each configured account. If you see the address in the logs, the account loaded successfully.
 
-## 签名机安全
+## Security Best Practices
 
-1. 如果为云服务器，可添加 ssh 登陆白名单，签名机端口请求白名单。当账户使用完成后，删除相关配置，释放该云服务器。白名单地址为
-   IPV4 格式。
-2. 如果为 ngrok 做机器代理，则 IP 白名单地址为 IPV6 格式，即应该配置为 `::1`
-3. 如果不想设置白名单，则删除whitelist里的配置即可；
-4. 当有新增交易场景时，需要设置rule的规则；
+1. **Cloud servers**: Configure SSH login whitelists and restrict access to the signer port. Delete configurations and release the server when no longer needed. Use IPv4 format for whitelist addresses.
+
+2. **ngrok tunnels**: When using ngrok, configure the IP whitelist with IPv6 format (e.g., `::1`).
+
+3. **Disabling whitelist**: Remove the whitelist configuration if you don't want IP restrictions.
+
+4. **Rule updates**: Add new rules whenever you need to support additional transaction types.
