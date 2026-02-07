@@ -33,7 +33,7 @@ func GetAccountFromMnemonic(mnemonic string, index int) *Account {
 
 	key := masterKey
 	for _, n := range path {
-		key, err = key.Derive(n)
+		key, err = key.Child(n)
 		if err != nil {
 			return nil
 		}
