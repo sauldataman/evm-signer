@@ -1,8 +1,8 @@
 package service
 
 import (
-	"cs-evm-signer/chains"
-	sTypes "cs-evm-signer/types"
+	"evm-signer/chains"
+	sTypes "evm-signer/types"
 	"encoding/json"
 	"fmt"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -83,9 +83,6 @@ func (s *Service) GetSignMessage(ctx *gin.Context) {
 	logger.Infof("request mathed rule [ %s ]", matchRule.Name)
 
 	s.iAccount.SetPriKey(ai.PriKey)
-	s.iAccount.SetHsmClient(ai.HsmClient)
-	s.iAccount.SetPrivateKeyForHsm(ai.HsmObjId)
-	//ai.Index
 	signature, err := s.iAccount.Signature(msgInfo.Message)
 	if err != nil {
 		_msg := fmt.Sprintf("get signature for [ %s ] message on [ %d ] chain error: [ %s ]",
@@ -204,24 +201,12 @@ func (s *Service) GetSign712(ctx *gin.Context) {
 		return
 	}
 
-	//eip712Data.Types["Root"] = []apitypes.Type{
-	//	{Name: "root", Type: "bytes32"},
-	//}
-	//eip712Data.Types["EIP712Domain"] = []apitypes.Type{
-	//	{Name: "name", Type: "string"},
-	//	{Name: "version", Type: "string"},
-	//	{Name: "chainId", Type: "uint256"},
-	//	{Name: "verifyingContract", Type: "address"},
-	//}
-
 	if eip712Data.PrimaryType == "" {
 		_msg := fmt.Sprintf("primary type is null")
 		logger.Errorf(_msg)
 		ReturnError(ctx, ParamError, _msg)
 		return
 	}
-
-	//logger.Infof("msgData: %v", msgInfo.Data)
 
 	if msgInfo.ChainId <= 0 {
 		_msg := fmt.Sprintf("chainId: [ %d ] <= 0, chainId should be > 0", msgInfo.ChainId)
@@ -269,28 +254,6 @@ func (s *Service) GetSign712(ctx *gin.Context) {
 			chainConfig.ChainId, err.Error())
 		logger.Errorf(_msg)
 		ReturnError(ctx, ParamError, _msg)
-		return
-	}
-
-	if ai.HsmClient != nil {
-		logger.Infof("using hsm sign message")
-		// 设置 privateKeyId
-		logger.Infof("using [ %d ] hsmObjId, account index [ %d ]", ai.HsmObjId, ai.Index)
-		ai.HsmClient.SetPriKeyId(uint(ai.HsmObjId))
-		signedBytes, err := ai.HsmClient.SignEip712(hashData)
-		if err != nil {
-			_msg := fmt.Sprintf("sign tx via hsm for [ %s ] eip712 message error: [ %s ]", msgInfo.Data, err)
-			logger.Errorf(_msg)
-			ReturnError(ctx, InvalidFormData, _msg)
-			return
-		}
-		sign := sTypes.Sign{
-			Signature: hexutil.Encode(signedBytes),
-		}
-
-		logger.Infof("[EIP712] request ip: [ %s ], chain_id: [ %d ], account: [ %s ], messgae: [ %s ], signed data: [ %s ]",
-			ctx.ClientIP(), msgInfo.ChainId, msgInfo.Account, msgInfo.Data, sign.Signature)
-		ctx.AbortWithStatusJSON(200, sign)
 		return
 	}
 
@@ -413,70 +376,6 @@ func (s *Service) GetSign(ctx *gin.Context) {
 		return
 	}
 
-	if ai.HsmClient != nil {
-		chain, err := chains.GetChain(chainConfig.ChainId, chainConfig.ChainType, "")
-		if err != nil {
-			_msg := fmt.Sprintf("[ %d ] chain config find error: [ %s ]", chainConfig.ChainId, err)
-			logger.Errorf(_msg)
-			ReturnError(ctx, ChainError, _msg)
-			return
-		}
-
-		txData, err := chain.NewTx(msgInfo.Transaction)
-		if err != nil {
-			_msg := fmt.Sprintf("[ %d ] chain new tx error: [ %s ]", chainConfig.ChainId, err)
-			logger.Errorf(_msg)
-			ReturnError(ctx, ChainError, _msg)
-			return
-		}
-
-		// 设置 privateKeyId
-		logger.Infof("using [ %d ] hsmObjId, account index [ %d ]", ai.HsmObjId, ai.Index)
-		ai.HsmClient.SetPriKeyId(uint(ai.HsmObjId))
-		signedBytes, _, err := ai.HsmClient.SignTx(big.NewInt(int64(chainConfig.ChainId)), txData)
-		if err != nil {
-			_msg := fmt.Sprintf("sign tx via hsm error: [ %s ]", err)
-			logger.Errorf(_msg)
-			ReturnError(ctx, InvalidFormData, _msg)
-			return
-		}
-
-		signer := types.LatestSignerForChainID(big.NewInt(msgInfo.ChainId))
-		txData, err = txData.WithSignature(signer, signedBytes)
-		if err != nil {
-			_msg := fmt.Sprintf("[ %d ] chain call WithSignature error: [ %s ]", msgInfo.ChainId, err.Error())
-			logger.Errorf(_msg)
-			ReturnError(ctx, SignError, _msg)
-			return
-		}
-		marshalJSON, err := txData.MarshalJSON()
-		if err != nil {
-			_msg := fmt.Sprintf("[ %d ] chain call MarshalJSON error: [ %s ]", msgInfo.ChainId, err.Error())
-			logger.Errorf(_msg)
-			ReturnError(ctx, SignError, _msg)
-			return
-		}
-
-		txHex, err := txData.MarshalBinary()
-		if err != nil {
-			_msg := fmt.Sprintf("[ %d ] chain call MarshalBinary error: [ %s ]", msgInfo.ChainId, err.Error())
-			logger.Errorf(_msg)
-			ReturnError(ctx, SignError, _msg)
-			return
-		}
-
-		sign := sTypes.Sign{
-			Signature: hexutil.Encode(signedBytes),
-			TxData:    string(marshalJSON),
-			TxHex:     hexutil.Encode(txHex),
-		}
-
-		logger.Infof("[Sign Transaction] request ip: [ %s ], chain_id: [ %d ], account: [ %s ], Transaction: [ %s ], signed data: [ %s ]",
-			ctx.ClientIP(), msgInfo.ChainId, msgInfo.Account, msgInfo.Transaction, sign.Signature)
-		ctx.AbortWithStatusJSON(200, sign)
-		return
-	}
-
 	key := priKey2Str(ai.PriKey)
 	chain, err := chains.GetChain(chainConfig.ChainId, chainConfig.ChainType, key)
 	if err != nil {
@@ -486,7 +385,7 @@ func (s *Service) GetSign(ctx *gin.Context) {
 		return
 	}
 
-	// normal sign or hsm sign
+	// normal sign
 	signature, err := chain.Sign(msgInfo.Transaction)
 	if err != nil {
 		_msg := fmt.Sprintf("get chain sign for [ %s ] transaction error: [ %s ]", tx.Hash, err.Error())

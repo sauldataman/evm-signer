@@ -1,10 +1,10 @@
 package account
 
 import (
-	"cs-evm-signer/types"
+	"evm-signer/pkg/ethutils"
+	"evm-signer/pkg/strutil"
+	"evm-signer/types"
 	"fmt"
-	ethutils "github.com/CoinSummer/go-ethutils"
-	dString "github.com/CoinSummer/go-utils/go/string"
 	"strconv"
 )
 
@@ -19,7 +19,7 @@ func NewPlainMnemonic(key, indexRange string) (*plainMnemonic, error) {
 	}
 
 	indexMap := make(map[int64]struct{})
-	splitMap, err := dString.SplitNum(indexRange)
+	splitMap, err := strutil.SplitNum(indexRange)
 	if err != nil {
 		return nil, fmt.Errorf("index config error")
 	}

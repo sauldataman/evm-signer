@@ -1,11 +1,11 @@
 package service
 
 import (
-	"cs-evm-signer/service/account"
-	"cs-evm-signer/service/rules"
-	"cs-evm-signer/types"
+	"evm-signer/pkg/logging"
+	"evm-signer/service/account"
+	"evm-signer/service/rules"
+	"evm-signer/types"
 	"fmt"
-	"github.com/CoinSummer/go-base/logging"
 	"github.com/gin-gonic/gin"
 	"strings"
 	"sync"
@@ -45,7 +45,7 @@ func (s *Service) GetAccount(accountAddr string) (account *types.Account, ok boo
 	if !ok {
 		return nil, ok
 	}
-	if account.PriKey == nil && account.HsmClient == nil {
+	if account.PriKey == nil {
 		return nil, false
 	}
 	return

@@ -2,8 +2,7 @@ package account
 
 import (
 	"crypto/ecdsa"
-	"cs-evm-signer/pkg/hsm/iface"
-	"cs-evm-signer/types"
+	"evm-signer/types"
 )
 
 type (
@@ -12,9 +11,6 @@ type (
 		Account() IAccountOpt
 		GetPriKey() *ecdsa.PrivateKey
 		SetPriKey(*ecdsa.PrivateKey)
-		SetHsmClient(iface.IHsm)
-		SetPublicKeyIdForHsm(int64)
-		SetPrivateKeyForHsm(int64)
 		Signature(message string) ([]byte, error)
 		SignatureFlashBot(message []byte) ([]byte, error)
 	}

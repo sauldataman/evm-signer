@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"cs-evm-signer/base"
-	"cs-evm-signer/service"
-	"github.com/CoinSummer/go-base/logging"
+	"evm-signer/base"
+	"evm-signer/service"
+	"evm-signer/pkg/logging"
 	"github.com/spf13/cobra"
 	"log"
 	"net/http"

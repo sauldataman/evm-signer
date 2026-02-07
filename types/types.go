@@ -2,7 +2,6 @@ package types
 
 import (
 	"crypto/ecdsa"
-	"cs-evm-signer/pkg/hsm/iface"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"math/big"
@@ -17,11 +16,9 @@ type Config struct {
 }
 
 type Account struct {
-	HsmClient iface.IHsm
-	HsmObjId  int64
-	Index     int64 // 虚拟助记词的 map id
-	Address   common.Address
-	PriKey    *ecdsa.PrivateKey
+	Index   int64 // 虚拟助记词的 map id
+	Address common.Address
+	PriKey  *ecdsa.PrivateKey
 }
 
 type Data struct {

@@ -1,7 +1,7 @@
 package account
 
 import (
-	"cs-evm-signer/types"
+	"evm-signer/types"
 	"fmt"
 	_keystore "github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/cmd/utils"

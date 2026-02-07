@@ -1,8 +1,8 @@
 package rules
 
 import (
-	"cs-evm-signer/types"
-	"github.com/CoinSummer/go-base/logging"
+	"evm-signer/pkg/logging"
+	"evm-signer/types"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 	"strings"
 )

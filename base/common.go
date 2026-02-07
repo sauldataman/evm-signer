@@ -1,8 +1,8 @@
 package base
 
 import (
+	"evm-signer/pkg/logging"
 	"fmt"
-	"github.com/CoinSummer/go-base/logging"
 	"github.com/spf13/viper"
 	"os"
 	"strings"

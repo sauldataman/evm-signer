@@ -1,7 +1,7 @@
 package rules
 
 import (
-	"cs-evm-signer/types"
+	"evm-signer/types"
 	"fmt"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common/hexutil"

@@ -1,8 +1,8 @@
 package service
 
 import (
-	sTypes "cs-evm-signer/types"
 	"encoding/json"
+	sTypes "evm-signer/types"
 	"math/big"
 	"strings"
 )

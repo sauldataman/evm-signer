@@ -44,7 +44,7 @@
         content.transaction.value === "0x0" || content.transaction.value === "0x00" ||
         content.transaction.value === "0");
         case "eip712":
-        return content.data.domain.name === "Blend" && content.data.domain.version === "1.0" && content.data.domain.chainId === "0x1" && content.data.domain.verifyingContract === "0x29469395eaf6f95920e59f858042f0e28d98a20b";
+        return content.data.domain.name === "ExampleProtocol" && content.data.domain.version === "1.0" && content.data.domain.chainId === "0x1" && content.data.domain.verifyingContract === "0x1234567890abcdef1234567890abcdef12345678";
         case "message":
         // 字符串中包含字串
         // return content.message.includes("12");

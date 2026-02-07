@@ -1,17 +1,16 @@
 package account
 
 import (
-	"cs-evm-signer/types"
 	"encoding/json"
+	"evm-signer/pkg/ethutils"
+	"evm-signer/pkg/strutil"
+	"evm-signer/types"
 	"fmt"
-	ethutils "github.com/CoinSummer/go-ethutils"
 	_keystore "github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/cmd/utils"
 	"github.com/google/uuid"
 	"os"
 	"strconv"
-
-	dString "github.com/CoinSummer/go-utils/go/string"
 )
 
 type encryptedMnemonic struct {
@@ -35,7 +34,7 @@ func NewEncryptedMnemonic(key, password, indexRange string) (*encryptedMnemonic,
 	}
 
 	indexMap := make(map[int64]struct{})
-	splitMap, err := dString.SplitNum(indexRange)
+	splitMap, err := strutil.SplitNum(indexRange)
 	if err != nil {
 		return nil, fmt.Errorf("index config error")
 	}
